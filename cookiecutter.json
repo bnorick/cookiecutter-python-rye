@@ -1,6 +1,7 @@
 {
   "project_name": "Py Package",
   "package_name": "{{ cookiecutter.project_name.lower().replace(' ', '').replace('-', '') }}",
+  "top_level_directory": "{{ cookiecutter.package_name.replace('_', '-') }}",
   "project_short_description": "TODO: write me",
   "full_name": "First Last",
   "email": "you@example.com",
