@@ -124,6 +124,8 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = [
+    # Unused variable
+    "F841",
     # Use of assert detected
     # Note: tests may use assert
     "S101",

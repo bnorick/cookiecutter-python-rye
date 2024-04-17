@@ -59,14 +59,28 @@ requirements.lock requirements-dev.lock: pyproject.toml
 
 .PHONY: format
 format: install
+	@ echo
+	@ echo '#### RUFF'
 	rye run ruff check ${PACKAGE_DIR} tests
+	@ echo
+	@ echo '#### BLACK'
 	rye run black $(PACKAGE_DIR) tests
 	@ echo
 
 .PHONY: check
-check: install format  ## Run formaters, linters, and static analysis
+check: install  ## Run formaters, linters, and static analysis
+	@ echo
+	@ echo '#### MYPY'
 	rye run mypy ${PACKAGE_DIR}
+	@ echo
+	@ echo '#### DEPTRY'
 	rye run deptry --config pyproject.toml ${PACKAGE_DIR} tests
+	@ echo
+	@ echo '#### RUFF'
+	rye run ruff check --output-format=full --no-fix
+	@ echo
+	@ echo '#### BLACK'
+	rye run black $(PACKAGE_DIR) tests --diff
 
 # TESTS #######################################################################
 

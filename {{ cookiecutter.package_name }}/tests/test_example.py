@@ -1,7 +1,3 @@
-import pytest
-from expecter import expect
-
-
 def describe_foobar():
 
     def it_can_pass(expect):
