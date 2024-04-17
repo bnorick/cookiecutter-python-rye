@@ -1,0 +1,68 @@
+PACKAGE := {{ cookiecutter.package_name }}
+PACKAGE_DIR := src/${PACKAGE}
+MODULES := $(wildcard $(PACKAGE_DIR)/*.py)
+
+# MAIN TASKS ##################################################################
+
+.PHONY: all
+all: doctor install ## Run all tasks that determine CI status
+
+{%- if "exploratory" in cookiecutter.virtual|lower %}
+
+.PHONY: ipython
+ipython: install
+	rye run ipython --ipython-dir=notebooks --profile-dir=notebooks/.ipython_profile
+
+.PHONY: demo
+demo: install
+	rye run nbstripout notebooks/demos/*.ipynb 2>/dev/null || true
+	rye run jupyter notebook --ServerApp.root_dir=notebooks --ServerApp.preferred_dir=notebooks/demos --allow-root --ip 0.0.0.0 --port 8888
+
+.PHONY: notebook
+notebook: install
+	rye run jupyter notebook --ServerApp.root_dir=notebooks --allow-root --ip 0.0.0.0 --port 8888
+{% endif %}
+# SYSTEM DEPENDENCIES #########################################################
+
+.PHONY: bootstrap
+bootstrap: ## Attempt to install system dependencies
+	asdf plugin add rye || asdf plugin update rye
+	asdf install
+
+.PHONY: doctor
+doctor: ## Confirm system dependencies are available
+	bin/verchew
+
+# PROJECT DEPENDENCIES ########################################################
+
+VIRTUAL_ENV ?= .venv
+DEPENDENCIES := $(VIRTUAL_ENV)/.deps-$(shell bin/checksum pyproject.toml requirements.lock requirements-dev.lock)
+
+.PHONY: install
+install: $(DEPENDENCIES) .cache ## Install project dependencies
+
+$(DEPENDENCIES): requirements.lock requirements-dev.lock
+	@ rm -rf $(VIRTUAL_ENV)/.deps-*
+	rye sync
+	@ touch $@
+
+requirements.lock requirements-dev.lock: pyproject.toml
+	rye lock
+	@ touch $@
+
+.cache:
+	@ mkdir -p .cache
+
+# CLEANUP #####################################################################
+
+.PHONY: clean
+clean:  ## Delete all generated and temporary files
+	rm -rf .venv .cache
+
+# HELP ########################################################################
+
+.PHONY: help
+help: install
+	@ grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+.DEFAULT_GOAL := help

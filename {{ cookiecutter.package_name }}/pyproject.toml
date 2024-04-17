@@ -144,4 +144,11 @@ pep621_dev_dependency_groups = ["test"]
 managed = true
 virtual = true
 dev-dependencies = []
+
+{%- if cookiecutter.command_line_interface|lower == "click" %}
+
+[tool.rye.scripts]
+{{ cookiecutter.package_name }} = "bin/{{ cookiecutter.package_name }}"
+{% endif -%}
+
 {% endif %}
