@@ -1,0 +1,11 @@
+{
+  "project_name": "Py Package",
+  "package_name": "{{ cookiecutter.project_name.lower().replace(' ', '').replace('-', '') }}",
+  "project_short_description": "TODO: write me",
+  "full_name": "First Last",
+  "email": "you@example.com",
+  "version": "0.1.0",
+  "virtual": false,
+  "command_line_interface": ["None", "Click"],
+  "open_source_license": ["MIT", "BSD-3-Clause", "ISC", "Apache-2.0", "GPL-3.0-only", "None"]
+}

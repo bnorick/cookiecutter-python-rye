@@ -1,0 +1,145 @@
+[project]
+name = "{{ cookiecutter.package_name }}"
+version = "0.1.0"
+description = "{{ cookiecutter.project_short_description }}"
+authors = [
+    {name = "{{ cookiecutter.full_name }}", email = "{{ cookiecutter.email }}"},
+]
+dependencies = [
+{%- if cookiecutter.command_line_interface|lower == "click" %}
+    "click>=8.1.7",
+{% endif -%}
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+{%- if not cookiecutter.virtual %}
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.1.1",
+    "pytest-random>=0.2",
+    "pytest-repeat>=0.9.3",
+    "pytest-describe>=2.2.0",
+    "pytest-expecter>=3.0",
+    "pytest-mock>=3.14.0",
+    "pytest-watch>=4.2.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "ruff>=0.3.4",
+    "black>=24.3.0",
+    "deptry>=0.15.0",
+    "mypy>=1.9.0",
+    "bump2version>=1.0.1",
+    "nbstripout>=0.7.1",
+    "ipython>=8.12.3",
+    "jupyter>=1.0.0",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/{{ cookiecutter.package_name }}"]
+
+# include = [
+#     { path = "src/{{ cookiecutter.package_name }}/py.typed" },
+#     # Typing stubs
+#     { path = "*.pyi"},
+# ]
+
+{% if cookiecutter.command_line_interface|lower == "click" %}
+[project.scripts]
+{{ cookiecutter.package_name }} = "{{ cookiecutter.package_name }}.cli:main"
+{%- endif %}
+
+[tool.black]
+line-length = 120
+target-version = ["py37"]
+preview = true
+
+[tool.mypy]
+cache_dir = ".cache/mypy/"
+disallow_untyped_defs = "True"
+disallow_any_unimported = "True"
+no_implicit_optional = "True"
+check_untyped_defs = "True"
+warn_return_any = "True"
+warn_unused_ignores = "True"
+show_error_codes = "True"
+ignore_missing_imports = "True"
+
+[tool.ruff]
+cache-dir = ".cache/ruff/"
+target-version = "py38"
+line-length = 120
+fix = true
+
+[tool.ruff.lint]
+select = [
+    # flake8-2020
+    "YTT",
+    # flake8-bandit
+    "S",
+    # flake8-bugbear
+    "B",
+    # flake8-builtins
+    "A",
+    # flake8-comprehensions
+    "C4",
+    # flake8-debugger
+    "T10",
+    # flake8-simplify
+    "SIM",
+    # isort
+    "I",
+    # mccabe
+    "C90",
+    # pycodestyle
+    "E", "W",
+    # pyflakes
+    "F",
+    # pygrep-hooks
+    "PGH",
+    # pyupgrade
+    "UP",
+    # ruff
+    "RUF",
+    # tryceratops
+    "TRY",
+]
+ignore = [
+    # LineTooLong
+    "E501",
+    # DoNotAssignLambda
+    "E731",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    # Use of assert detected
+    # Note: tests may use assert
+    "S101",
+    # Pointless comparison
+    # Note: pytest-expecter may use "pointless" comparisons
+    "B015",
+]
+
+[tool.deptry]
+known_first_party = ["{{ cookiecutter.package_name }}"]
+ignore_notebooks = true
+pep621_dev_dependency_groups = ["test"]
+{% else %}
+
+[tool.rye]
+managed = true
+virtual = true
+dev-dependencies = []
+{% endif %}
