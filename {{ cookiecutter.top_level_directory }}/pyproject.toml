@@ -13,7 +13,8 @@ dependencies = [
 readme = "README.md"
 requires-python = ">= 3.8"
 
-{%- if not cookiecutter.virtual %}
+{%- set virtual = cookiecutter.virtual %}
+{%- if virtual.lower().startswith("no") %}
 
 [project.optional-dependencies]
 test = [
@@ -143,7 +144,13 @@ pep621_dev_dependency_groups = ["test"]
 [tool.rye]
 managed = true
 virtual = true
-dev-dependencies = []
+dev-dependencies = [
+{%- if "exploratory" in cookiecutter.virtual|lower %}
+    "nbstripout>=0.7.1",
+    "ipython>=8.12.3",
+    "jupyter>=1.0.0",
+{% endif -%}
+]
 
 {%- if cookiecutter.command_line_interface|lower == "click" %}
 
