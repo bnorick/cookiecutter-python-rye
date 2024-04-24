@@ -105,5 +105,5 @@ if __name__ == "__main__":
         if not with_cli:
             delete(relpath="src/{{ cookiecutter.package_name }}/cli.py")
 
-    if "{{ cookiecutter.open_source_license }}" == "Not open source":
+    if "{{ cookiecutter.open_source_license }}" == "None":
         delete(relpath="LICENSE")

@@ -8,5 +8,5 @@
   "version": "0.1.0",
   "virtual": ["No", "Yes (exploratory)", "Yes (monorepo)"],
   "command_line_interface": ["None", "Click"],
-  "open_source_license": ["MIT", "BSD-3-Clause", "ISC", "Apache-2.0", "GPL-3.0-only", "None"]
+  "open_source_license": ["None", "MIT", "BSD-3-Clause", "ISC", "Apache-2.0", "GPL-3.0-only"]
 }
